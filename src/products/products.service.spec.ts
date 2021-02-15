@@ -17,6 +17,11 @@ const product2: Product = new Product(
   150000.0,
   'The best Notebook in the world!',
 );
+const updatedProduct: Product = new Product(
+  'Smartphone last generation',
+  12999,
+  'The best last generation Smartphone in the world!',
+);
 
 const productArray = [product1, product2];
 
@@ -35,7 +40,7 @@ describe('ProductsService', () => {
             create: jest.fn().mockResolvedValue(product1),
             findOne: jest.fn().mockResolvedValue(product1),
             delete: jest.fn().mockResolvedValue(product1),
-            update: jest.fn().mockReturnThis(),
+            update: jest.fn().mockResolvedValue(updatedProduct),
 
             metadata: {
               columns: [
@@ -61,16 +66,16 @@ describe('ProductsService', () => {
 
   describe('create()', () => {
     it('should create a product', async () => {
-      const createProduct1Dto: CreateProductDto = {
+      const createProductDto: CreateProductDto = {
         name: 'Smartphone',
         value: 9999.9,
         description: 'The best Smatphone in the world!',
       };
-      expect(productsService.create(createProduct1Dto)).resolves.toEqual(
+      expect(productsService.create(createProductDto)).resolves.toEqual(
         product1,
       );
       expect(productsRepository.create).toBeCalledTimes(1);
-      expect(productsRepository.create).toBeCalledWith(createProduct1Dto);
+      expect(productsRepository.create).toBeCalledWith(createProductDto);
     });
   });
 
@@ -113,22 +118,25 @@ describe('ProductsService', () => {
   describe('update()', () => {
     it('should update one product, by id', async () => {
       const id = 1;
-      const product = await productsService.update(id, {
+
+      const createProductDto: CreateProductDto = {
         name: 'Smartphone',
         value: 9999.9,
         description: 'The best Smatphone in the world!',
-      });
-
+      };
       const updateProductDto: UpdateProductDto = {
         name: 'Smartphone last generation',
         value: 12999,
         description: 'The best last generation Smartphone in the world!',
       };
-      expect(product).toEqual(product1);
-      expect(productsRepository.update).toBeCalledTimes(1);
-      expect(productsRepository.update).toBeCalledWith(
-        { id },
-        updateProductDto,
+      const product = await productsService.create(createProductDto);
+
+      expect(product).toHaveProperty('name');
+      expect(product).toHaveProperty('value');
+      expect(product).toHaveProperty('description');
+
+      expect(productsService.update(id, updateProductDto)).resolves.toEqual(
+        updatedProduct,
       );
     });
   });
