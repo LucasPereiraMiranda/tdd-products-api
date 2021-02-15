@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,7 +14,7 @@ const product1: Product = new Product(
 const product2: Product = new Product(
   'Notebook',
   150000.0,
-  'The best Computer in the world!',
+  'The best Notebook in the world!',
 );
 
 const productArray = [product1, product2];
@@ -31,7 +32,6 @@ describe('ProductsService', () => {
           useValue: {
             find: jest.fn().mockResolvedValue(productArray),
             create: jest.fn().mockResolvedValue(product1),
-            save: jest.fn(),
             findOne: jest.fn().mockResolvedValue(product1),
 
             metadata: {
@@ -58,7 +58,7 @@ describe('ProductsService', () => {
 
   describe('create()', () => {
     it('should create a product', async () => {
-      const createProduct1Dto = {
+      const createProduct1Dto: CreateProductDto = {
         name: 'Smartphone',
         value: 9999.9,
         description: 'The best Smatphone in the world!',
@@ -75,6 +75,28 @@ describe('ProductsService', () => {
     it('should find all products, returning a array', async () => {
       const products = await productsService.findAll();
       expect(products).toEqual(productArray);
+    });
+  });
+
+  describe('findOne()', () => {
+    it('should find one product, by id', async () => {
+      const productsSpyRepository = jest.spyOn(productsRepository, 'findOne');
+      expect(productsService.findOne(1)).resolves.toEqual(product1);
+      expect(productsSpyRepository).toBeCalledWith(1);
+    });
+
+    it('should throw a BadRequestException if the id not exists', async () => {
+      const badId = 10;
+      const productsSpyRepository = jest
+        .spyOn(productsRepository, 'findOne')
+        .mockRejectedValueOnce(
+          new BadRequestException(`The product with id ${badId} not exists`),
+        );
+      expect(productsService.findOne(badId)).resolves.toEqual({
+        message: `The product with id ${badId} not exists`,
+      });
+      expect(productsSpyRepository).toBeCalledWith(badId);
+      expect(productsSpyRepository).toBeCalledTimes(1);
     });
   });
 });
