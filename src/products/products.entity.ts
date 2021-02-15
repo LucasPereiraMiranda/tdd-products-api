@@ -7,6 +7,12 @@ import {
 
 @Entity('products')
 export class Product {
+  constructor(name?: string, value?: number, description?: string) {
+    this.name = name;
+    this.value = value;
+    this.description = description;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
