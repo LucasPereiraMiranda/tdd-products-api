@@ -1,8 +1,9 @@
-import { BadRequestException, HttpCode, HttpStatus } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 
@@ -34,6 +35,7 @@ describe('ProductsService', () => {
             create: jest.fn().mockResolvedValue(product1),
             findOne: jest.fn().mockResolvedValue(product1),
             delete: jest.fn().mockResolvedValue(product1),
+            update: jest.fn().mockReturnThis(),
 
             metadata: {
               columns: [
@@ -105,6 +107,29 @@ describe('ProductsService', () => {
     it('should delete one product, by id', async () => {
       const id = 1;
       expect(productsService.findOne(id)).resolves.toEqual(product1);
+    });
+  });
+
+  describe('update()', () => {
+    it('should update one product, by id', async () => {
+      const id = 1;
+      const product = await productsService.update(id, {
+        name: 'Smartphone',
+        value: 9999.9,
+        description: 'The best Smatphone in the world!',
+      });
+
+      const updateProductDto: UpdateProductDto = {
+        name: 'Smartphone last generation',
+        value: 12999,
+        description: 'The best last generation Smartphone in the world!',
+      };
+      expect(product).toEqual(product1);
+      expect(productsRepository.update).toBeCalledTimes(1);
+      expect(productsRepository.update).toBeCalledWith(
+        { id },
+        updateProductDto,
+      );
     });
   });
 });
