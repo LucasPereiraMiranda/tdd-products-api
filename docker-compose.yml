@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    container_name: tdd-products-api
+    entrypoint: ./.docker/entrypoint.sh
+    ports:
+      - 3000:${APP_PORT}
+    volumes:
+      - .:/home/node/app
+
+  db:
+    image: mysql:5.7
+    container_name: tdd-products-db
+    restart: always
+    tty: true
+    ports:
+      - 33006:${TYPEORM_PORT}
+    volumes:
+      - tdd-products-dbdata:/var/lib/mysql
+    environment:
+        MYSQL_DATABASE: ${TYPEORM_DATABASE}
+        MYSQL_USER: ${TYPEORM_USERNAME}
+        MYSQL_ROOT_PASSWORD: ${TYPEORM_PASSWORD}
+
+volumes:
+  tdd-products-dbdata:
