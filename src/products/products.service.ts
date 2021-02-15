@@ -31,4 +31,10 @@ export class ProductsService {
     }
     return product;
   }
+
+  async remove(id: number): Promise<Product> {
+    const product = await this.findOne(id);
+    await this.productRepository.delete(id);
+    return product;
+  }
 }
