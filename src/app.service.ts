@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { WelcomeResponse } from './interface/app.interface';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getHello(): WelcomeResponse {
+    return { message: 'Welcome to nestjs tdd-products-api' };
   }
 }
