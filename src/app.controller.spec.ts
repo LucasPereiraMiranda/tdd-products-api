@@ -15,8 +15,13 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should have property message', () => {
+      expect(appController.getHello()).toHaveProperty('message');
+    });
+    it('should have Specific message', () => {
+      expect(appController.getHello()).toStrictEqual({
+        message: 'Welcome to nestjs tdd-products-api',
+      });
     });
   });
 });
