@@ -2,10 +2,10 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './products.entity';
-import { ProductsService } from './products.service';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
+import { Product } from '../products.entity';
+import { ProductsService } from '../products.service';
 
 const product1: Product = new Product(
   'Smartphone',
