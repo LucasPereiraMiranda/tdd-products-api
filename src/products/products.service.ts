@@ -19,4 +19,8 @@ export class ProductsService {
     product.description = description;
     return this.productRepository.create(createProductDto);
   }
+
+  async findAll(): Promise<Product[]> {
+    return await this.productRepository.find();
+  }
 }
