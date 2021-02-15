@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpCode, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,6 +33,7 @@ describe('ProductsService', () => {
             find: jest.fn().mockResolvedValue(productArray),
             create: jest.fn().mockResolvedValue(product1),
             findOne: jest.fn().mockResolvedValue(product1),
+            delete: jest.fn().mockResolvedValue(product1),
 
             metadata: {
               columns: [
@@ -97,6 +98,13 @@ describe('ProductsService', () => {
       });
       expect(productsSpyRepository).toBeCalledWith(badId);
       expect(productsSpyRepository).toBeCalledTimes(1);
+    });
+  });
+
+  describe('remove()', () => {
+    it('should delete one product, by id', async () => {
+      const id = 1;
+      expect(productsService.findOne(id)).resolves.toEqual(product1);
     });
   });
 });
