@@ -38,6 +38,7 @@ describe('ProductsService', () => {
           useValue: {
             find: jest.fn().mockResolvedValue(productArray),
             create: jest.fn().mockResolvedValue(product1),
+            save: jest.fn().mockResolvedValue(product1),
             findOne: jest.fn().mockResolvedValue(product1),
             delete: jest.fn().mockResolvedValue(product1),
             update: jest.fn().mockResolvedValue(updatedProduct),
@@ -74,8 +75,8 @@ describe('ProductsService', () => {
       expect(productsService.create(createProductDto)).resolves.toEqual(
         product1,
       );
-      expect(productsRepository.create).toBeCalledTimes(1);
-      expect(productsRepository.create).toBeCalledWith(createProductDto);
+      expect(productsRepository.save).toBeCalledTimes(1);
+      expect(productsRepository.save).toBeCalledWith(createProductDto);
     });
   });
 

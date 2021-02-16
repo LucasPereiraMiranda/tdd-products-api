@@ -18,7 +18,7 @@ export class ProductsService {
     product.name = name;
     product.value = value;
     product.description = description;
-    return this.productRepository.create(createProductDto);
+    return this.productRepository.save(createProductDto);
   }
 
   async findAll(): Promise<Product[]> {
