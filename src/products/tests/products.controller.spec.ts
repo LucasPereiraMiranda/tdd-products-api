@@ -45,9 +45,14 @@ describe('ProductsController', () => {
                 (id: string, updateProductDto: UpdateProductDto) =>
                   Promise.resolve({ id, ...updateProductDto }),
               ),
-            remove: jest
-              .fn()
-              .mockImplementation((id: string) => Promise.resolve({ id })),
+            remove: jest.fn().mockImplementation((id: string) =>
+              Promise.resolve({
+                id: +id,
+                name: 'Smartphone',
+                value: 9999.9,
+                description: 'The best Smatphone in the world!',
+              }),
+            ),
           },
         },
       ],
@@ -112,6 +117,17 @@ describe('ProductsController', () => {
         await expect(controller.update(id, updateProductDto)).resolves.toEqual({
           id: +id,
           ...updateProductDto,
+        });
+      });
+    });
+    describe('remove()', () => {
+      const id = '1';
+      it('should delete a product and return this', async () => {
+        await expect(controller.remove(id)).resolves.toEqual({
+          id: +id,
+          name: 'Smartphone',
+          value: 9999.9,
+          description: 'The best Smatphone in the world!',
         });
       });
     });
