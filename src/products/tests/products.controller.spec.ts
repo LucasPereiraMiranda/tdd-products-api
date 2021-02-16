@@ -37,7 +37,7 @@ describe('ProductsController', () => {
             create: jest
               .fn()
               .mockImplementation((createProductDto: CreateProductDto) =>
-                Promise.resolve({ id: 1, ...createProductDto }),
+                Promise.resolve({ ...createProductDto }),
               ),
             update: jest
               .fn()
@@ -74,6 +74,21 @@ describe('ProductsController', () => {
           description: 'The best Notebook in the world!',
         },
       ]);
+    });
+
+    describe('create()', () => {
+      it('should create one products', async () => {
+        const createProductDto: CreateProductDto = {
+          name: 'Smartphone',
+          value: 9999.9,
+          description: 'The best Smatphone in the world!',
+        };
+        await expect(controller.create(createProductDto)).resolves.toEqual({
+          name: 'Smartphone',
+          value: 9999.9,
+          description: 'The best Smatphone in the world!',
+        });
+      });
     });
   });
 });
