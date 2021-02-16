@@ -28,10 +28,10 @@ describe('ProductsController', () => {
             ]),
             findOne: jest.fn().mockImplementation((id: string) =>
               Promise.resolve({
+                id: +id,
                 name: 'Notebook',
                 value: 150000.0,
                 description: 'The best Notebook in the world!',
-                id,
               }),
             ),
             create: jest
@@ -87,6 +87,31 @@ describe('ProductsController', () => {
           name: 'Smartphone',
           value: 9999.9,
           description: 'The best Smatphone in the world!',
+        });
+      });
+    });
+    describe('findOne()', () => {
+      const id = '1';
+      it('should find one product, by id', async () => {
+        await expect(controller.findOne(id)).resolves.toEqual({
+          id: +id,
+          name: 'Notebook',
+          value: 150000.0,
+          description: 'The best Notebook in the world!',
+        });
+      });
+    });
+    describe('update()', () => {
+      const id = '1';
+      it('should update a product', async () => {
+        const updateProductDto: UpdateProductDto = {
+          name: 'Smartphone last generation',
+          value: 12999,
+          description: 'The best last generation Smartphone in the world!',
+        };
+        await expect(controller.update(id, updateProductDto)).resolves.toEqual({
+          id: +id,
+          ...updateProductDto,
         });
       });
     });
