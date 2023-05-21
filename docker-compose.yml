@@ -5,24 +5,41 @@ services:
     build: .
     container_name: tdd-products-api
     entrypoint: ./.docker/entrypoint.sh
+    env_file:
+      - .env
     ports:
-      - 3000:${APP_PORT}
+      - ${APP_PORT}:${APP_PORT}
     volumes:
       - .:/home/node/app
+    depends_on:
+      - mysql
+    networks:
+      - internal-network
 
-  db:
+  mysql:
     image: mysql:5.7
-    container_name: tdd-products-db
+    container_name: mysql
     restart: always
     tty: true
-    ports:
-      - 33006:${TYPEORM_PORT}
     volumes:
-      - tdd-products-dbdata:/var/lib/mysql
+      - mysql:/var/lib/mysql 
     environment:
-        MYSQL_DATABASE: ${TYPEORM_DATABASE}
-        MYSQL_USER: ${TYPEORM_USERNAME}
-        MYSQL_ROOT_PASSWORD: ${TYPEORM_PASSWORD}
+      - MYSQL_DATABASE=${TYPEORM_DATABASE}
+      - MYSQL_USER=${TYPEORM_USERNAME}
+      - MYSQL_PASSWORD=${TYPEORM_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${TYPEORM_PASSWORD}
+
+    networks:
+      - internal-network
+
 
 volumes:
-  tdd-products-dbdata:
+  mysql:
+
+networks:
+  internal-network:
+    driver: bridge
+
+
+
+
