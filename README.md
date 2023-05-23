@@ -62,3 +62,16 @@ $ npm run typeorm migration:run
 <h1 align="center">
     <img alt="migrations" title="#migrations" src=".github/images/migrations.png" />
 </h1>
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
