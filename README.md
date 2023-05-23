@@ -56,3 +56,9 @@ $ docker run exec -it app_docker_container_id bash
 $ npm run typeorm migration:run
 
 ```
+
+### Image details to run migrations
+
+<h1 align="center">
+    <img alt="migrations" title="#migrations" src=".github/images/migrations.png" />
+</h1>
