@@ -22,3 +22,20 @@
 </p>
 
 <br>
+
+## 🚀 Techs
+
+TDD products api was developed with these technologies
+
+- [Nest](https://nestjs.com/)
+- [Node](https://nodejs.org/en)
+- [Typeorm](https://typeorm.io/)
+- [Docker](https://www.docker.com/)
+- [Postgres](https://www.postgresql.org/)
+- [Jest](https://jestjs.io/pt-BR/)
+
+## 💻 Project
+
+This project's API has been developed with the primary objective of studying and exploring the core principles of Test Driven Development (TDD) and automated testing in general.
+
+This version provides more clarity and completeness by specifying the purpose of the API and emphasizing its objective of studying and exploring the principles of TDD and automated testing.
