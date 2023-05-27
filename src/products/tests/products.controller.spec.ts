@@ -45,18 +45,13 @@ describe('ProductsController', () => {
 
     describe('create()', () => {
       it('should create one products', async () => {
-        const createProductDto: CreateProductDto = {
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        };
+        jest
+          .spyOn(productsService, 'create')
+          .mockResolvedValue(mockedProduct1 as any);
+
         await expect(
-          productsController.create(createProductDto),
-        ).resolves.toEqual({
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        });
+          productsController.create(mockedProduct1),
+        ).resolves.toEqual(mockedProduct1);
       });
     });
     describe('findOne()', () => {
