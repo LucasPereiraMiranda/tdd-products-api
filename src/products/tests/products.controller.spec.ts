@@ -3,132 +3,97 @@ import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductsController } from '../products.controller';
 import { ProductsService } from '../products.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { repositoryFactoryMock } from '../../common/tests/repositoryFactory.mock';
+import { Product } from '../products.entity';
+import { mockedProduct1, mockedProduct2 } from './mocks/products.mock';
 
 describe('ProductsController', () => {
-  let controller: ProductsController;
+  let productsController: ProductsController;
+  let productsService: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProductsController],
       providers: [
+        ProductsService,
         {
-          provide: ProductsService,
-          useValue: {
-            findAll: jest.fn().mockResolvedValue([
-              {
-                name: 'Smartphone',
-                value: 9999.9,
-                description: 'The best Smatphone in the world!',
-              },
-              {
-                name: 'Notebook',
-                value: 150000.0,
-                description: 'The best Notebook in the world!',
-              },
-            ]),
-            findOne: jest.fn().mockImplementation((id: string) =>
-              Promise.resolve({
-                id: +id,
-                name: 'Notebook',
-                value: 150000.0,
-                description: 'The best Notebook in the world!',
-              }),
-            ),
-            create: jest
-              .fn()
-              .mockImplementation((createProductDto: CreateProductDto) =>
-                Promise.resolve({ ...createProductDto }),
-              ),
-            update: jest
-              .fn()
-              .mockImplementation(
-                (id: string, updateProductDto: UpdateProductDto) =>
-                  Promise.resolve({ id, ...updateProductDto }),
-              ),
-            remove: jest.fn().mockImplementation((id: string) =>
-              Promise.resolve({
-                id: +id,
-                name: 'Smartphone',
-                value: 9999.9,
-                description: 'The best Smatphone in the world!',
-              }),
-            ),
-          },
+          provide: getRepositoryToken(Product),
+          useFactory: repositoryFactoryMock,
         },
       ],
     }).compile();
 
-    controller = module.get<ProductsController>(ProductsController);
+    productsController = module.get<ProductsController>(ProductsController);
+    productsService = module.get<ProductsService>(ProductsService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(productsController).toBeDefined();
   });
 
   describe('findAll()', () => {
     it('should find one array of products', async () => {
-      await expect(controller.findAll()).resolves.toEqual([
-        {
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        },
-        {
-          name: 'Notebook',
-          value: 150000.0,
-          description: 'The best Notebook in the world!',
-        },
+      jest
+        .spyOn(productsService, 'findAll')
+        .mockResolvedValue([mockedProduct1, mockedProduct2] as any);
+      await expect(productsController.findAll()).resolves.toEqual([
+        mockedProduct1,
+        mockedProduct2,
       ]);
     });
 
     describe('create()', () => {
       it('should create one products', async () => {
-        const createProductDto: CreateProductDto = {
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        };
-        await expect(controller.create(createProductDto)).resolves.toEqual({
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        });
+        jest
+          .spyOn(productsService, 'create')
+          .mockResolvedValue(mockedProduct1 as any);
+
+        await expect(
+          productsController.create(mockedProduct1),
+        ).resolves.toEqual(mockedProduct1);
       });
     });
     describe('findOne()', () => {
       const id = '1';
       it('should find one product, by id', async () => {
-        await expect(controller.findOne(id)).resolves.toEqual({
-          id: +id,
-          name: 'Notebook',
-          value: 150000.0,
-          description: 'The best Notebook in the world!',
-        });
+        jest
+          .spyOn(productsService, 'findOne')
+          .mockResolvedValue(mockedProduct1 as any);
+
+        await expect(productsController.findOne(id)).resolves.toEqual(
+          mockedProduct1,
+        );
       });
     });
+
     describe('update()', () => {
       const id = '1';
       it('should update a product', async () => {
-        const updateProductDto: UpdateProductDto = {
-          name: 'Smartphone last generation',
-          value: 12999,
-          description: 'The best last generation Smartphone in the world!',
-        };
-        await expect(controller.update(id, updateProductDto)).resolves.toEqual({
+        jest.spyOn(productsService, 'update').mockResolvedValue({
           id: +id,
-          ...updateProductDto,
+          ...mockedProduct1,
+        } as any);
+
+        await expect(
+          productsController.update(id, mockedProduct1),
+        ).resolves.toEqual({
+          id: +id,
+          ...mockedProduct1,
         });
       });
     });
+
     describe('remove()', () => {
       const id = '1';
       it('should delete a product and return this', async () => {
-        await expect(controller.remove(id)).resolves.toEqual({
-          id: +id,
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        });
+        jest
+          .spyOn(productsService, 'remove')
+          .mockResolvedValue(mockedProduct1 as any);
+
+        await expect(productsController.remove(id)).resolves.toEqual(
+          mockedProduct1,
+        );
       });
     });
   });
