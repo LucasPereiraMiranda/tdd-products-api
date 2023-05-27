@@ -3,71 +3,37 @@ import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { ProductsController } from '../products.controller';
 import { ProductsService } from '../products.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { repositoryFactoryMock } from '../../common/tests/repositoryFactory.mock';
+import { Product } from '../products.entity';
 
 describe('ProductsController', () => {
-  let controller: ProductsController;
+  let productsController: ProductsController;
+  let productsService: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProductsController],
       providers: [
+        ProductsService,
         {
-          provide: ProductsService,
-          useValue: {
-            findAll: jest.fn().mockResolvedValue([
-              {
-                name: 'Smartphone',
-                value: 9999.9,
-                description: 'The best Smatphone in the world!',
-              },
-              {
-                name: 'Notebook',
-                value: 150000.0,
-                description: 'The best Notebook in the world!',
-              },
-            ]),
-            findOne: jest.fn().mockImplementation((id: string) =>
-              Promise.resolve({
-                id: +id,
-                name: 'Notebook',
-                value: 150000.0,
-                description: 'The best Notebook in the world!',
-              }),
-            ),
-            create: jest
-              .fn()
-              .mockImplementation((createProductDto: CreateProductDto) =>
-                Promise.resolve({ ...createProductDto }),
-              ),
-            update: jest
-              .fn()
-              .mockImplementation(
-                (id: string, updateProductDto: UpdateProductDto) =>
-                  Promise.resolve({ id, ...updateProductDto }),
-              ),
-            remove: jest.fn().mockImplementation((id: string) =>
-              Promise.resolve({
-                id: +id,
-                name: 'Smartphone',
-                value: 9999.9,
-                description: 'The best Smatphone in the world!',
-              }),
-            ),
-          },
+          provide: getRepositoryToken(Product),
+          useFactory: repositoryFactoryMock,
         },
       ],
     }).compile();
 
-    controller = module.get<ProductsController>(ProductsController);
+    productsController = module.get<ProductsController>(ProductsController);
+    productsService = module.get<ProductsService>(ProductsService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(productsController).toBeDefined();
   });
 
   describe('findAll()', () => {
     it('should find one array of products', async () => {
-      await expect(controller.findAll()).resolves.toEqual([
+      await expect(productsController.findAll()).resolves.toEqual([
         {
           name: 'Smartphone',
           value: 9999.9,
@@ -88,7 +54,9 @@ describe('ProductsController', () => {
           value: 9999.9,
           description: 'The best Smatphone in the world!',
         };
-        await expect(controller.create(createProductDto)).resolves.toEqual({
+        await expect(
+          productsController.create(createProductDto),
+        ).resolves.toEqual({
           name: 'Smartphone',
           value: 9999.9,
           description: 'The best Smatphone in the world!',
@@ -98,7 +66,7 @@ describe('ProductsController', () => {
     describe('findOne()', () => {
       const id = '1';
       it('should find one product, by id', async () => {
-        await expect(controller.findOne(id)).resolves.toEqual({
+        await expect(productsController.findOne(id)).resolves.toEqual({
           id: +id,
           name: 'Notebook',
           value: 150000.0,
@@ -114,7 +82,9 @@ describe('ProductsController', () => {
           value: 12999,
           description: 'The best last generation Smartphone in the world!',
         };
-        await expect(controller.update(id, updateProductDto)).resolves.toEqual({
+        await expect(
+          productsController.update(id, updateProductDto),
+        ).resolves.toEqual({
           id: +id,
           ...updateProductDto,
         });
@@ -123,7 +93,7 @@ describe('ProductsController', () => {
     describe('remove()', () => {
       const id = '1';
       it('should delete a product and return this', async () => {
-        await expect(controller.remove(id)).resolves.toEqual({
+        await expect(productsController.remove(id)).resolves.toEqual({
           id: +id,
           name: 'Smartphone',
           value: 9999.9,
