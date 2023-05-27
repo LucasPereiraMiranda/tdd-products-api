@@ -107,4 +107,28 @@ describe('ProductsService', () => {
       expect(productsService.remove(id)).resolves.toBe(mockedProduct1);
     });
   });
+
+  describe('update()', () => {
+    it('should update one product, by id', async () => {
+      const id = 1;
+
+      const updateProductDto: UpdateProductDto = {
+        name: 'Smartphone last generation',
+        value: 12999,
+        description: 'The best last generation Smartphone in the world!',
+      };
+
+      jest
+        .spyOn(productsService, 'findOne')
+        .mockResolvedValueOnce(mockedProduct1 as any);
+
+      jest
+        .spyOn(productsService, 'findOne')
+        .mockResolvedValueOnce(mockedUpdatedProduct as any);
+
+      expect(productsService.update(id, updateProductDto)).resolves.toBe(
+        mockedUpdatedProduct,
+      );
+    });
+  });
 });
