@@ -66,5 +66,22 @@ describe('ProductsController', () => {
         );
       });
     });
+
+    describe('update()', () => {
+      const id = '1';
+      it('should update a product', async () => {
+        jest.spyOn(productsService, 'update').mockResolvedValue({
+          id: +id,
+          ...mockedProduct1,
+        } as any);
+
+        await expect(
+          productsController.update(id, mockedProduct1),
+        ).resolves.toEqual({
+          id: +id,
+          ...mockedProduct1,
+        });
+      });
+    });
   });
 });
