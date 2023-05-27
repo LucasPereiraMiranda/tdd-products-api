@@ -6,6 +6,7 @@ import { ProductsService } from '../products.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryFactoryMock } from '../../common/tests/repositoryFactory.mock';
 import { Product } from '../products.entity';
+import { mockedProduct1, mockedProduct2 } from './mocks/products.mock';
 
 describe('ProductsController', () => {
   let productsController: ProductsController;
@@ -33,17 +34,12 @@ describe('ProductsController', () => {
 
   describe('findAll()', () => {
     it('should find one array of products', async () => {
+      jest
+        .spyOn(productsService, 'findAll')
+        .mockResolvedValue([mockedProduct1, mockedProduct2] as any);
       await expect(productsController.findAll()).resolves.toEqual([
-        {
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        },
-        {
-          name: 'Notebook',
-          value: 150000.0,
-          description: 'The best Notebook in the world!',
-        },
+        mockedProduct1,
+        mockedProduct2,
       ]);
     });
 
