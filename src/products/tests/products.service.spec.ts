@@ -38,4 +38,24 @@ describe('ProductsService', () => {
     expect(productsService).toBeDefined();
     expect(productsRepository).toBeDefined();
   });
+
+  describe('create()', () => {
+    it('should create a product', async () => {
+      const createProductDto: CreateProductDto = {
+        name: 'Smartphone',
+        value: 9999.9,
+        description: 'The best Smatphone in the world!',
+      };
+
+      jest
+        .spyOn(productsRepository, 'save')
+        .mockResolvedValue(mockedProduct1 as never);
+
+      expect(productsService.create(createProductDto)).resolves.toEqual(
+        mockedProduct1,
+      );
+      expect(productsRepository.save).toBeCalledTimes(1);
+      expect(productsRepository.save).toBeCalledWith(createProductDto);
+    });
+  });
 });
