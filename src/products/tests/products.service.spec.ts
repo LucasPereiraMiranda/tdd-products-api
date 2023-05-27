@@ -58,4 +58,15 @@ describe('ProductsService', () => {
       expect(productsRepository.save).toBeCalledWith(createProductDto);
     });
   });
+
+  describe('findAll()', () => {
+    it('should find all products, returning a array', async () => {
+      jest
+        .spyOn(productsRepository, 'find')
+        .mockResolvedValue([mockedProduct1, mockedProduct2] as never);
+
+      const products = await productsService.findAll();
+      expect(products).toEqual([mockedProduct1, mockedProduct2]);
+    });
+  });
 });
