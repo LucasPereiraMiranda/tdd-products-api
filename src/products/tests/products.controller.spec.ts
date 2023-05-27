@@ -83,5 +83,18 @@ describe('ProductsController', () => {
         });
       });
     });
+
+    describe('remove()', () => {
+      const id = '1';
+      it('should delete a product and return this', async () => {
+        jest
+          .spyOn(productsService, 'remove')
+          .mockResolvedValue(mockedProduct1 as any);
+
+        await expect(productsController.remove(id)).resolves.toEqual(
+          mockedProduct1,
+        );
+      });
+    });
   });
 });
