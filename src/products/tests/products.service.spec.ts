@@ -69,4 +69,26 @@ describe('ProductsService', () => {
       expect(products).toEqual([mockedProduct1, mockedProduct2]);
     });
   });
+
+  describe('findOne()', () => {
+    it('should find one product, by id', async () => {
+      jest
+        .spyOn(productsRepository, 'findOne')
+        .mockResolvedValue(mockedProduct1 as never);
+
+      expect(productsService.findOne(1)).resolves.toEqual(mockedProduct1);
+    });
+
+    it('should throw a BadRequestException if the id not exists', async () => {
+      const badId = 10;
+      jest
+        .spyOn(productsRepository, 'findOne')
+        .mockRejectedValueOnce(
+          new BadRequestException(
+            `The product with id ${badId} not exists`,
+          ) as never,
+        );
+      expect(productsService.findOne(badId)).rejects.toThrow();
+    });
+  });
 });
