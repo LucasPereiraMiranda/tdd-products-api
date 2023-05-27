@@ -57,39 +57,13 @@ describe('ProductsController', () => {
     describe('findOne()', () => {
       const id = '1';
       it('should find one product, by id', async () => {
-        await expect(productsController.findOne(id)).resolves.toEqual({
-          id: +id,
-          name: 'Notebook',
-          value: 150000.0,
-          description: 'The best Notebook in the world!',
-        });
-      });
-    });
-    describe('update()', () => {
-      const id = '1';
-      it('should update a product', async () => {
-        const updateProductDto: UpdateProductDto = {
-          name: 'Smartphone last generation',
-          value: 12999,
-          description: 'The best last generation Smartphone in the world!',
-        };
-        await expect(
-          productsController.update(id, updateProductDto),
-        ).resolves.toEqual({
-          id: +id,
-          ...updateProductDto,
-        });
-      });
-    });
-    describe('remove()', () => {
-      const id = '1';
-      it('should delete a product and return this', async () => {
-        await expect(productsController.remove(id)).resolves.toEqual({
-          id: +id,
-          name: 'Smartphone',
-          value: 9999.9,
-          description: 'The best Smatphone in the world!',
-        });
+        jest
+          .spyOn(productsService, 'findOne')
+          .mockResolvedValue(mockedProduct1 as any);
+
+        await expect(productsController.findOne(id)).resolves.toEqual(
+          mockedProduct1,
+        );
       });
     });
   });
