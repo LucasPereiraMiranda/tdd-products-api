@@ -91,4 +91,20 @@ describe('ProductsService', () => {
       expect(productsService.findOne(badId)).rejects.toThrow();
     });
   });
+
+  describe('remove()', () => {
+    it('should delete one product, by id', async () => {
+      const id = 1;
+
+      jest
+        .spyOn(productsRepository, 'findOne')
+        .mockResolvedValue(mockedProduct1 as never);
+
+      jest
+        .spyOn(productsRepository, 'remove')
+        .mockResolvedValue(undefined as never);
+
+      expect(productsService.remove(id)).resolves.toBe(mockedProduct1);
+    });
+  });
 });
