@@ -1,6 +1,6 @@
 <h1 align="center">
   <br/>
-  TDD products-api
+  TDD products api
 </h1>
 
 <p align="center">
@@ -69,9 +69,4 @@ $ npm run typeorm migration:run
 # unit tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
