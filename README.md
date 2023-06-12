@@ -1,6 +1,7 @@
 <h1 align="center">
   <br/>
-  TDD products-api
+
+  TDD products api
 </h1>
 
 <p align="center">
